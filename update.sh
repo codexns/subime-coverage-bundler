@@ -59,15 +59,16 @@ download_extract() {
     mkdir -p $COVERAGE_DIR/$ST_DIR/coverage/
 
     mv coverage/tracer$SO_EXT $COVERAGE_DIR/$ST_DIR/coverage/
-    
+
     if [[ $COPY_PY_FILES != "" ]]; then
         if [[ -e $COVERAGE_DIR/all ]]; then
             rm -R $COVERAGE_DIR/all/
         fi
         mkdir -p $COVERAGE_DIR/all/coverage/
 
-        find coverage -type d -not -name 'coverage' -exec mkdir -p '{}' \;
+        find coverage -type d -not -name 'coverage' -exec mkdir -p $COVERAGE_DIR/all/'{}' \;
         find coverage -type f -iname '*.py' -exec cp '{}' $COVERAGE_DIR/all/'{}' \;
+        cp -R coverage/htmlfiles $COVERAGE_DIR/all/coverage/
     fi
     cd $BUNDLER_DIR
 }
