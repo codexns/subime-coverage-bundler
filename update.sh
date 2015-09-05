@@ -20,7 +20,6 @@ TMP_DIR="$BUNDLER_DIR/tmp"
 download_extract() {
     PLAT_ARCH="$1"
     ST_DIR="$2"
-    COPY_PY_FILES="$3"
 
     if [[ -e $TMP_DIR/$PLAT_ARCH ]]; then
         rm -R $TMP_DIR/$PLAT_ARCH
@@ -58,22 +57,15 @@ download_extract() {
     fi
     mkdir -p $COVERAGE_DIR/$ST_DIR/coverage/
 
-    mv coverage/tracer$SO_EXT $COVERAGE_DIR/$ST_DIR/coverage/
+    cp coverage/tracer$SO_EXT $COVERAGE_DIR/$ST_DIR/coverage/
+    cp -R coverage/htmlfiles $COVERAGE_DIR/$ST_DIR/coverage/
+    find coverage -type d -not -name 'coverage' -exec mkdir -p $COVERAGE_DIR/$ST_DIR/'{}' \;
+    find coverage -type f -iname '*.py' -exec cp '{}' $COVERAGE_DIR/$ST_DIR/'{}' \;
 
-    if [[ $COPY_PY_FILES != "" ]]; then
-        if [[ -e $COVERAGE_DIR/all ]]; then
-            rm -R $COVERAGE_DIR/all/
-        fi
-        mkdir -p $COVERAGE_DIR/all/coverage/
-
-        find coverage -type d -not -name 'coverage' -exec mkdir -p $COVERAGE_DIR/all/'{}' \;
-        find coverage -type f -iname '*.py' -exec cp '{}' $COVERAGE_DIR/all/'{}' \;
-        cp -R coverage/htmlfiles $COVERAGE_DIR/all/coverage/
-    fi
     cd $BUNDLER_DIR
 }
 
-download_extract py26_linux-x32   st2_linux_x32    all
+download_extract py26_linux-x32   st2_linux_x32
 download_extract py26_linux-x64   st2_linux_x64
 download_extract py26_osx-x64     st2_osx_x64
 download_extract py26_windows-x32 st2_windows_x32
